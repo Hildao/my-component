@@ -1,0 +1,247 @@
+Build a text field component.
+
+export default function TextField({}) {
+  return (
+    <input type="text" placeholder='Give your name'/> 
+  )
+}
+
+input has a type of text.
+
+Create a div above input and add label to TextField.
+
+export default function TextField({}) {
+  return (
+    <div>
+        <label className='font-bold'>Your name</label>
+      </div>
+    <input type="text" placeholder='Give your name'/> 
+  )
+}
+
+Pass type, placeholder & label as props
+
+export default function TextField({ type = 'text', placeholder, label }) {
+  return (
+  <div>
+        <label className='font-bold'>{label}</label>
+      </div>
+  <input type={type} placeholder={placeholder} />;
+  )
+}
+
+import TextField to Homepage from ui/text-field
+
+import Modal from '@/ui/modal';
+import TextField from '@/ui/text-field';
+
+export default function Homepage() {
+  return (
+    <div className='bg-gray-600 h-screen py-12 px-12'>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Deleniti obcaecati asperiores eligendi! Eveniet cumque
+        officiis, inventore, dolores ex aut ipsam at illum eligendi
+        minima eaque officia nam perferendis tenetur molestiae.
+      </p>
+     
+      <Modal>
+        <p>
+          How do you put content into this? How do you put content
+          into this? How do you put content into this? How do you put
+          content into this? How do you put content into this?
+        </p>
+
+        <TextField label='Your name' placeholder='Give your name' />
+      </Modal>
+    </div>
+  );
+}
+
+Save and chack it out in the browser. you will see the textfield displayed.
+
+In order to know what is inside this input field without inspecting the DOM, use react best practice by making it a controlled input.
+To do this, inside the TextField component, give the input field a value. Give the value a variable called value enclose the variable inside a javascript expression. 
+This variable value is going to be tied to a piece of state.
+
+Next inside HomePage component, import useState from react. This will bind the value that is typed in the textfield to the state.
+
+Inside the top level of the HomePage component, create the piece of state using const then square bracket. 
+The first value of the array which is a tuple meaning it has 2 values, is the getter and you can call it anything you want. In this case I called it name. 
+The second argument of the turple is the setter to change the value of that variable, and you can call it anything you want. in this case, I called it setName. 
+Then inside the call to useState, set the default state by initialising it to an empty string. This is because, if we call name.toLowerCase or name.length or any number of the string operations, 
+and the value is either undefined or null, we are going to get an error but by initialising it to an empty string, it's always going to support all the string method.
+
+const [name, setName] = useState('');
+
+Next go to TextField component. In order to change the value of the input field, we need to add an onChange handler as property.
+The onChange handler is the function that will fire whenever the textbox changes.
+we are going to use an arrow function inside the onChange handler, 
+the arrow function will give us access to the synthetic event which I have called e then we are going to call onChange( ) and add inside e.target.value
+
+Then pass value, onChange and label as props.
+
+export default function TextField({
+  type = 'text',
+  placeholder,
+  value,
+  onChange = () => {},
+  label,
+}) {
+  return (
+    <div>
+        <label className='font-bold'>{label}</label>
+      </div>
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  );
+}
+
+To see this in action, go back to HomePage and implement TextField by adding these props, label, placeholder, value, onChange to it.
+we are going to use an arrow function inside the onChange handler, the arrow function will give us access to the systhetic event which I have called e then we are going to call setName( ) and add name inside as the value.
+
+import { useState } from 'react';
+import Modal from '@/ui/modal';
+import TextField from '@/ui/text-field';
+
+export default function Homepage() {
+   const [name, setName] = useState('');
+
+  return (
+    <div className='bg-gray-600 h-screen py-12 px-12'>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Deleniti obcaecati asperiores eligendi! Eveniet cumque
+        officiis, inventore, dolores ex aut ipsam at illum eligendi
+        minima eaque officia nam perferendis tenetur molestiae.
+      </p>
+     
+      <Modal>
+        <p>
+          How do you put content into this? How do you put content
+          into this? How do you put content into this? How do you put
+          content into this? How do you put content into this?
+        </p>
+
+         <TextField
+         label='Your name'
+          placeholder='Give your name'
+          value={name}
+          onChange={(name) => setName(name)}
+        />
+      </Modal>
+    </div>
+  );
+}
+
+Save and check it out in the browser.
+
+Inspect it and go to the components tab, you will see the state hook and our props.
+
+The state hook is initialised to an empty string. but when you start typing some value inside
+the text box you will see that the state has updated with what you typed in. 
+This is happening because when you type in to the text box, the onChangehandler fires and puts the letters that you typed into the state.
+And since the text box is bound to the state, you are going to see it also appear in the text box.
+
+
+Next logic to implement - When you click on a field label, it should put the focus on the related field to implement this, we need another piece of state 
+Go to TextField component, and import useState from react
+
+Inside the top level of the TextField component, create a piece of state, this is for whether or not we are focused on the text box field.
+const [focused, setFocused] = useState(false)
+
+The default initial value for this piece of state is false because, it's a boolean and when the page first loads, the field is not focused.
+
+To use this, add an onFocus handler to TextField and inside of it, we are going to use an arrow function. 
+The arrow function is used because, when this component renders into the browser it doesn't immediately call your function. 
+because if we change the state and the render, if it's not inside of an arrow function, it's going to re-render and it's going to change it;s state and it's going to re-render 
+and this is going to give you a too many renders error. So we solved this problem by putting this function into an arrow function which will delay execution on the state change until the event fires.
+
+onFocus={() => ()}
+
+so we are going to call setFocused and pass true to it. because we want to set the focus when the focus event fires.
+onFocus={() => setFocused(true)}
+
+Next we implement the onBlur so when you mouse out of the field, the onBlur fires to remove the focus.
+onBlur={() => ()}
+inside this arrow function, we are going to call setFocused and inside setFocused we will pass false because it's no longer focused.
+onBlur={() => setFocused(false)}
+
+So the TextField component looks like below.
+
+import { useState } from 'react';
+
+export default function TextField({
+  type = 'text',
+  placeholder,
+  value,
+  onChange = () => {},
+  label,
+}) {
+  const [focused, setFocused] = useState(false);
+
+  return (
+    <div>
+      <div>
+        <label className='font-bold'>{label}</label>
+      </div>
+      <input
+        className='border-2 rounded border-gray-500 w-full py-2 px-4'
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+      />
+    </div>
+  );
+}
+
+
+Next we need some conditional rendering.
+inside label className, we are going to have a turnary that says, if focused is true, return a 'text-purple-500' string as a className 
+otherwise, return an empty string.
+
+<label className={`font-bold ${focused ? 'is-focused' : ''}`}>{label}</label>
+
+TextField component will now look like this. 
+
+import { useState } from 'react';
+
+export default function TextField({
+  type = 'text',
+  placeholder,
+  value,
+  onChange = () => {},
+  label,
+}) {
+  const [focus, setFocus] = useState(false);
+
+  return (
+    <div>
+      <div>
+        <label
+          className={`font-bold ${focus ? 'text-purple-500' : ''}`}
+        >
+          {label}
+        </label>
+      </div>
+      <input
+        className='border-2 rounded border-gray-500 w-full py-2 px-4'
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
+      />
+    </div>
+  );
+}
+
+Check it out in th browser, you will see that when the mouse is focued on the text box the label turns colour purple.

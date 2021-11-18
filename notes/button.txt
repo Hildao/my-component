@@ -1,0 +1,152 @@
+Creat a component called Button.
+
+export default function Button({ }) {
+  return (
+    <button>
+    </button>
+  );
+}
+
+Pass children as props. It is better to give the thing that is going to be between the opening and closing tag children. 
+If you do children, this allows you to put in html tags and all kinds of other stuff and styling that you can't do if it's text.
+
+Pass onClick as props. You are adding onClick to button because when you click on it you just want it to do something.
+Make sure to give the onClick a default value of onClick = () => {} if you don't and the onClick happens, it's going to explode 
+because onClick={onClick} is not a function.
+
+Now if you don't provide a property called onClick, it just won't do anything it will just run the function which is fine.
+
+So, now add some style to button.
+
+export default function Button({ children, onClick = () => {} }) {
+  return (
+    <button
+      className='border-2 rounded border-gray-500 w-full py-2 font-bold text-blue-400'
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
+Now this component is now an abstraction and it's generic enough to work anywhere.
+
+To use the Button component, go to the Homepage and import Button and implement it there to render.
+
+//Pass className as props and default it to an empty string. className=''
+export default function Button({ children, onClick = () => {}, className=''}) {
+  return (
+    <button
+      className={`border-2 rounded border-gray-500 py-2 px-4 font-bold text-blue-400 ${className} ${block ? 'w-full' : ''}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+// Decide if your button is going to be a block element. if it is going to be a block
+//then pass block as a prop to Buton and make that default to false.
+// block = false,
+// This is because anytime you are given a true or false element in react, you always want to default it to false.
+//and the reason why is we can now say, if it is a block element, then add the w-full otherwise, return just an empty string.
+// ${block ? 'w-full' : ''}
+
+export default function Button({ children, onClick = () => {}, className='', block = false}) {
+  return (
+    <button
+      className={`border-2 rounded border-gray-500 py-2 px-4 font-bold text-blue-400 ${className} ${block ? 'w-full' : ''}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
+The HomePage now looks like this.
+
+import { useState } from 'react';
+import Modal from '@/ui/modal';
+import TextField from '@/ui/text-field';
+import CheckBox from '@/ui/check-box';
+import Radio from '@/ui/radio';
+import Button from '@/ui/button';
+
+export default function Homepage() {
+  const [name, setName] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [radio, setRadio] = useState(false);
+
+  return (
+    <div className='bg-gray-600 h-screen py-12 px-12'>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Deleniti obcaecati asperiores eligendi! Eveniet cumque
+        officiis, inventore, dolores ex aut ipsam at illum eligendi
+        minima eaque officia nam perferendis tenetur molestiae.
+      </p>
+      <Button block className='mt-4' onClick={() => alert('clicked')}>
+        Click me
+      </Button>
+      <p className='mt-4'>
+        Qui animi molestiae minima ea illum, at sed sapiente iste
+        laborum cumque ipsam voluptatem! Vel aliquid ullam, minus
+        animi exercitationem sint, magni praesentium neque possimus a,
+        nobis inventore laborum? Excepturi!
+      </p>
+      <p className='mt-4'>
+        Ex rem molestias eius nostrum quasi! Voluptatibus non,
+        inventore soluta voluptas nobis sapiente, hic ex aliquid,
+        minima itaque totam? Libero reiciendis eius omnis natus, porro
+        soluta quas laudantium accusamus quidem.
+      </p>
+      <p className='mt-4'>
+        Tenetur provident fuga odio adipisci impedit nam nostrum quo
+        necessitatibus. Consequatur sit, consequuntur beatae
+        doloremque, odit quae optio quas, temporibus laudantium
+        facilis eius dolore fugit ipsum similique aliquam unde
+        blanditiis?
+      </p>
+      <Modal>
+        <div className='space-y-2'>
+          <h2 className='font-bold'>Welcome.</h2>
+
+          <TextField
+            label='Your name'
+            placeholder='Give your name'
+            value={name}
+            onChange={(name) => setName(name)}
+          />
+          <p className='font-bold'>Gender</p>
+          <div className='flex justify-center space-x-2'>
+            <Radio
+              label='Male'
+              checked={radio === 'male'}
+              value='male'
+              onChange={(male) => setRadio(male)}
+            />
+            <Radio
+              label='Female'
+              checked={radio === 'female'}
+              value='female'
+              onChange={(female) => setRadio(female)}
+            />
+            <Radio
+              label='Other'
+              checked={radio === 'other'}
+              value='other'
+              onChange={(other) => setRadio(other)}
+            />
+          </div>
+          <CheckBox
+            label='Remember me'
+            checked={rememberMe}
+            onChange={(rememberMe) => setRememberMe(rememberMe)}
+          />
+          <Button block onClick={() => alert('clicked')}>
+            Submit
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+}

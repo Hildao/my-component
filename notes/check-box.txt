@@ -1,0 +1,126 @@
+ Build a checkbox component.
+
+Pass type, checked and onChange as props to CheckBox.
+
+ export default function CheckBox({
+  type = 'checkbox',
+  checked,
+  onChange = () => {},
+  label,
+}) {
+  return (
+    <div className='space-x-2'>
+    <input
+      type={type}
+      checked={checked}
+      onChange={(e) => onChange(e.target.checked)}
+    />
+     <label className='text-sm'>
+        {label}
+      </label>
+      </div>
+  );
+}
+
+Import CheckBox to HomePage component
+using the react useState hook, to track the state, implement rememberMe and setRememberMe as shown below.
+  
+
+Then implement the props from CheckBox, checked and onChange to HomePage.
+
+import { useState } from 'react';
+import Modal from '@/ui/modal';
+import TextField from '@/ui/text-field';
+import CheckBox from '@/ui/check-box';
+
+export default function Homepage() {
+   const [name, setName] = useState('');
+   const [rememberMe, setRememberMe] = useState(false);
+
+  return (
+    <div className='bg-gray-600 h-screen py-12 px-12'>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Deleniti obcaecati asperiores eligendi! Eveniet cumque
+        officiis, inventore, dolores ex aut ipsam at illum eligendi
+        minima eaque officia nam perferendis tenetur molestiae.
+      </p>
+     
+      <Modal>
+        <div className='space-y-2'>
+          <h2 className='font-bold'>Welcome.</h2>
+
+         <TextField
+         label='Your name'
+          placeholder='Give your name'
+          value={name}
+          onChange={(name) => setName(name)}
+         />
+
+         <div>
+            <CheckBox
+             label='Remember me'
+              checked={rememberMe}
+              onChange={(rememberMe) => setRememberMe(rememberMe)}
+            />
+          </div>
+        </div>
+
+      </Modal>
+    </div>
+  );
+}
+
+Save and check it out in the browser. You will see the check box and label under the TextField
+
+
+Next logic to implement - When you click on a field label, it should put the focus on the related field to implement this, we need another piece of state 
+Go to CheckBox component, and import useState from react
+
+Inside the top level of the CheckBox component, create a piece of state, this is for whether or not we are focused on the text box field.
+const [focused, setFocused] = useState(false)
+
+The default initial value for this piece of state is false because, it's a boolean and when the page first loads, the field is not focused.
+
+To use this, add an onFocus handler to input and inside of it, we are going to use an arrow function. 
+The arrow function is used because, when this component renders into the browser it doesn't immediately call your function. 
+because if we change the state and the render, if it's not inside of an arrow function, it's going to re-render and it's going to change it;s state and it's going to re-render 
+and this is going to give you a too many renders error. So we solved this problem by putting this function into an arrow function which will delay execution on the state change until the event fires.
+
+onFocus={() => ()}
+
+so we are going to call setFocused and pass true to it. because we want to set the focus when the focus event fires.
+onFocus={() => setFocused(true)}
+
+Next we implement the onBlur so when you mouse out of the field, the onBlur fires to remove the focus.
+onBlur={() => ()}
+inside this arrow function, we are going to call setFocused and inside setFocused we will pass false because it's no longer focused.
+onBlur={() => setFocused(false)}
+
+So the CheckBox component looks like below.
+
+import { useState } from 'react';
+
+export default function CheckBox({
+  type = 'checkbox',
+  checked,
+  onChange = () => {},
+  label,
+}) {
+  const [focus, setFocus] = useState(false);
+
+  return (
+    <div className='space-x-2'>
+      <input
+        type={type}
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
+      />
+      <label className={`text-sm ${focus ? 'text-purple-500' : ''}`}>
+        {label}
+      </label>
+    </div>
+  );
+}

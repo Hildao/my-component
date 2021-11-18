@@ -1,0 +1,111 @@
+How to use local storage to store data.
+
+In the case of this app, when you enter type a name inside the text box, select a gender, tick remember me checkbox and then click the submit button, we can still see the data entered. 
+If you refresh the browser, the data enetered is gone, you will not see the data again. 
+
+What I need to do is to persist that data to stay in my local browser.
+
+Local storage can help to resolve this problem
+Local storage can get the information entered on the various fields before the user submit and then store it on the browser. 
+so this way the user do not loose what they entered in the various fields.
+
+To track this change of state, we will use useEffect which is a react hook.
+
+I want to implement these 2 logics with useEffect:
+  //Only run once the first time this component is rendered
+  //run every time values that is our state changes.
+
+  it makes sense to implement the 2nd logic first that is //run every time values that is our state changes.
+
+Inside the HomePage component,
+
+import {useEffect} from 'react';
+
+The useEffect function takes 2 parameters.
+
+const useEffect(() => {}, [])
+
+The first parameter is a function
+The second parameter is an array. In react, this is called a dependency array.
+
+This means that anything that is place inside the dependency array, is a value that the whole useEffect depends on.
+So anytime something changes in the dependency array, it will automatically call the function inside the useEffect.
+
+Next we want to add name from our piece of state inside the dependency array. This is because
+whenever the state changes, it will run the function inside useEffect.
+
+Note that the function in this case doesn't take anything it's just an empty function.
+
+const useEffect(() => {
+
+}, [name])
+
+So now we have our values called name and we can now store it inside the browser's local storage.
+We can assess that using localStorage then we call in setItem()
+
+useEffect(() => {
+localStorage.setItem()    //while typing this in you will see expected 2 arguements but got 0.
+}, [name])
+
+The first arguement is the key which is a string. so lets call it user-details this will be a unique identifier which the browser can use to store your detail differently.
+
+The second arguement is a string in this case. 
+ useEffect(() => {
+localStorage.setItem('userData', JSON.stringify(name)); 
+}, [name])
+
+so react will run this code everytime our state name changes. 
+We save that and go back to the browser and check it out.
+
+click inspect and go to applications, go to local storage.
+inside local storage you will see our work in there and the data is being stored there.
+
+To implement the second logic,
+//Only run once the first time this component is rendered
+
+This is where we want to load any data from the browser localStorage only if it exist.
+
+  useEffect(() => {
+    if (localStorage.getItem('userData')) {}
+  }, []);
+
+Then we update our state with setValues. 
+
+  useEffect(() => {
+    if (localStorage.getItem('userData')) {
+      setValues());
+    }
+  }, []);
+
+Before pulling up the data from the localStorage, you need to parse the data because what is stored in localStorage is just a string of text. 
+So you parse it so it is actual javascipt data, an array of objects. 
+
+To do that JSON.parse(localStorage.getItem('userData') so it is actual Javascript data.
+
+  useEffect(() => {
+    if (localStorage.getItem('userData')) {
+      setValues(JSON.parse());
+    }
+  }, []);
+
+  Then you pull in that string from localStorage
+
+  useEffect(() => {
+    if (localStorage.getItem('userData')) {
+      setValues(JSON.parse(localStorage.getItem()));
+    }
+  }, []);
+
+Then add the name of your data stored in localStorage in this case userData.
+
+   useEffect(() => {
+    if (localStorage.getItem('userData')) {
+      setValues(JSON.parse(localStorage.getItem('userData')));
+    }
+  }, []);
+
+Save and go back to the broser to check it out.
+
+click inspect and go to applications, go to local storage.
+inside local storage you will see our work in there and the data is being stored there. 
+so if you close you refresh your browser or close your application and come back to check it, it will still be there.
